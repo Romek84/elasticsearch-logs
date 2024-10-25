@@ -12,13 +12,14 @@ Filter by Role: Filters and displays users based on their assigned role.
 Available Roles: Lists available roles for easier user role assignment.
 
 
-2. elasticsearch_index_and_document_management.py
-This script helps with index management and document insertion in Elasticsearch, aimed at creating an index, adding sample documents, and querying them.
+2. index_logs.py
+This script connects to an Elasticsearch instance, checks for a specified index, and performs indexing and querying operations with pagination.
 
 Key Functionalities:
-Connecting to Elasticsearch: Establishes a connection and verifies it.
+Connecting to Elasticsearch: Connects securely to an Elasticsearch instance using basic authentication.
 Index Management:
-Check Index Existence: Verifies if a specified index (log-index) exists; if not, it creates the index.
-Document Management:
-Add Sample Documents: Inserts sample documents with author names, text, and timestamps, allowing for easy testing of the index.
-Query Execution: Runs a basic match_all query to retrieve and display all documents within the index.
+Index Check & Creation: Checks if a specified index exists; if not, creates the index.
+Sample Data Insertion: Adds a set of sample documents with author, text, and timestamp fields for testing purposes.
+Data Query with Pagination:
+Allows querying all documents within the index using pagination parameters (page and page_size) for efficient data retrieval.
+Displays the total number of results and lists document details for the current page.
