@@ -1,4 +1,5 @@
 1. elasticsearch_user_management.py
+   
 This script allows for creating, updating, deleting, and filtering users within an Elasticsearch environment.
 
 Key Functionalities:
@@ -13,6 +14,7 @@ Available Roles: Lists available roles for easier user role assignment.
 
 
 2. index_logs.py
+   
 This script connects to an Elasticsearch instance, checks for a specified index, and performs indexing and querying operations with pagination.
 
 Key Functionalities:
