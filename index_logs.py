@@ -1,27 +1,57 @@
 import warnings
 from elasticsearch import Elasticsearch, ElasticsearchWarning
+from datetime import datetime
 
-# Disable Elasticsearch w
+# Disable Elasticsearch warnings
 warnings.filterwarnings('ignore', category=ElasticsearchWarning)
 
-# Connect to the Elasticsearch cluster running locally on port 9200
-es = Elasticsearch([{'host': 'localhost', 'port': 9200, 'scheme': 'http'}])
+# Connect to Elasticsearch
+es = Elasticsearch(
+    [{'host': 'localhost', 'port': 9200, 'scheme': 'http'}],
+    basic_auth=("elastic", "XXXX")  # Use basic_auth instead of http_auth
+)
 
-# Check if the connection to Elasticsearch is successful
+# Check connection
 if es.ping():
     print("Connected to Elasticsearch")
 else:
-    print("Connection failed")
+    print("Connection error")
 
-# Example query: Fetch documents from the "log-index" index
-# We use the match_all query to retrieve all documents, limiting the results to 10
-response = es.search(index="log-index", body={
-    "query": {
-        "match_all": {}
-    },
-    "size": 10  # Limit the number of results to 10
-})
+index_name = "log-index"
 
-# Loop through the results and print each document's source data
-for hit in response['hits']['hits']:
-    print(hit['_source'])
+# Check if index exists
+if not es.indices.exists(index=index_name):
+    print(f"Index '{index_name}' does not exist. Creating a new index...")
+    es.indices.create(index=index_name)
+
+    # Add sample data
+    for i in range(5):  # Add 5 sample documents
+        doc = {
+            'author': f'Author {i}',
+            'text': f'This is a sample text from Author {i}.',
+            'timestamp': datetime.now(),
+        }
+        response = es.index(index=index_name, id=i + 1, body=doc)
+        print(f"Document added: {response['_id']}")  # Information about added document
+    print("Sample documents added.")
+else:
+    print(f"Index '{index_name}' already exists.")
+
+# Example of a filtered query
+try:
+    response = es.search(index=index_name, body={
+        "query": {
+            "match_all": {}
+        },
+        "size": 10
+    })
+
+    total_results = response['hits']['total']['value']
+    print(f"Total number of results: {total_results}")
+
+    for hit in response['hits']['hits']:
+        print(hit['_source'])
+
+except Exception as e:
+    print(f"An error occurred: {e}")
+
